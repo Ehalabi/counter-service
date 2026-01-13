@@ -1,0 +1,32 @@
+# Stage 1
+FROM python:3.12-slim AS build
+
+WORKDIR /app
+
+COPY app/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app/ .
+
+RUN pip install --no-cache-dir pytest
+RUN pytest -sv
+
+# Stage 2
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY --from=build /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=build /app/counter_service.py /app
+
+RUN useradd -ms /bin/bash nonroot \
+    && mkdir -p /data \
+    && chown nonroot:nonroot /data
+
+ENV COUNTER_FILE=/data/counter.txt
+
+USER nonroot
+
+EXPOSE 8000
+
+ENTRYPOINT ["python3", "counter_service.py"]

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: counter
+  template:
+    metadata:
+      labels:
+        app: counter
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: counter
+          image: e119/counter-service:latest
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: counter-storage
+              mountPath: /data
+      volumes:
+        - name: counter-storage
+          persistentVolumeClaim:
+            claimName: counter-pvc
