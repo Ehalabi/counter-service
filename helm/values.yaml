@@ -1,19 +1,15 @@
 replicaCount: 2
-
 image:
   repository: e119/counter-service
-  tag: 6f8c5432b9446d26eb335ca3af20217f20551e64
+  tag: 7588bb63eb610b3c7579270668cb6da9f8c9540a
   pullPolicy: Always
-
 service:
   type: ClusterIP
   port: 80
   targetPort: 8000
-
 redis:
   host: redis
   port: 6379
-
 resources:
   limits:
     cpu: 200m
@@ -21,18 +17,15 @@ resources:
   requests:
     cpu: 50m
     memory: 64Mi
-
 livenessProbe:
   path: /healthz
   port: 8000
   initialDelaySeconds: 10
   periodSeconds: 10
-
 readinessProbe:
   path: /readyz
   port: 8000
   initialDelaySeconds: 10
   periodSeconds: 10
-
 ingress:
   enabled: true
