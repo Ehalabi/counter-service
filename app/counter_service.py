@@ -6,7 +6,7 @@ COUNTER_FILE = os.getenv("COUNTER_FILE", "data/counter.txt")
 
 def load_counter():
     try:
-        with open(COUNTER_FILE, 'r') as f:
+        with open(COUNTER_FILE, 'r', encoding="utf-8") as f:
             content = f.read()
             return int(content) if content else 0
     except Exception as e:
@@ -15,7 +15,7 @@ def load_counter():
 
 def save_counter(value):
     try:
-        with open(COUNTER_FILE, 'w') as f:
+        with open(COUNTER_FILE, 'w', encoding="utf-8") as f:
             f.write(str(value))
     except Exception as e:
         print(f"Failed to save counter: {e}")
@@ -49,9 +49,7 @@ def index():
             counter+=1
             save_counter(counter)
             return "Hmm, Plus 1 please "
-
-        else:
-            return str(f"Our counter is: {counter} ")
+        return str(f"Our counter is: {counter} ")
 
     except Exception as e:
         return f"Internal server error: {e}\n", 500
