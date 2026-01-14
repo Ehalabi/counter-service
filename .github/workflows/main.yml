@@ -5,7 +5,25 @@ on:
     branches:
       - main
 jobs:
-  dockerhub-login:
+  ci-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Install dependencies
+        run: |
+          pip install -r app/requirements.txt
+          pip install pylint pytest
+      - name: Lint and Test
+        run: |
+          pylint app/*.py
+          pytest app/tests
+
+  build-and-push:
+    needs: ci-testing
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
