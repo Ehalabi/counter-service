@@ -37,16 +37,7 @@ def healthz():
 
 @app.get("/readyz")
 def readyz():
-    try:
-        dir_name = os.path.dirname(os.path.abspath(COUNTER_FILE))
-        if not os.path.exists(dir_name):
-            return "NOT READY: Directory does not exist\n", 503
-        if not os.access(dir_name, os.W_OK):
-            return "NOT READY: Directory not writable\n", 503
-
-        return "READY\n", 200
-    except Exception as e:
-        return f"NOT READY: {str(e)}\n", 503 
+    return ("ready", 200) if os.path.exists("/data/counter.txt") else ("not ready", 503)
 
 @app.route('/', methods=["POST", "GET"])
 def index():
