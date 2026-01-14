@@ -19,11 +19,7 @@ WORKDIR /app
 COPY --from=build /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=build /app/counter_service.py /app
 
-RUN useradd -ms /bin/bash nonroot \
-    && mkdir -p /data \
-    && chown nonroot:nonroot /data
-
-ENV COUNTER_FILE=/data/counter.txt
+RUN useradd -ms /bin/bash nonroot 
 
 USER nonroot
 

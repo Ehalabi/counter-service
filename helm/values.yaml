@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 3
 image:
   repository: e119/counter-service
   tag: 3272ba056ce79476a087add807fa376db019d83f
@@ -7,6 +7,9 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 8000
+redis:
+  host: redis-service
+  port: 6379
 resources:
   limits:
     cpu: 200m
@@ -14,13 +17,6 @@ resources:
   requests:
     cpu: 50m
     memory: 64Mi
-pvc:
-  enabled: true
-  name: counter-pvc
-  storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  storageClassname: gp3-storage-class
 livenessProbe:
   path: /healthz
   port: 8000
