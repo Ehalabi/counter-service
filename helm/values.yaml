@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: e119/counter-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+pvc:
+  enabled: true
+  name: counter-pvc
+  storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassname: gp3-storage-class
+
+livenessProbe:
+  path: /healthz
+  port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+readinessProbe:
+  path: /readyz
+  port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+ingress:
+  enabled: true

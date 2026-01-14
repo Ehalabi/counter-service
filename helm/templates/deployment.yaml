@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "counter-service.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "counter-service.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "counter-service.name" . }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: init-counter
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /data/counter.txt ]; then
+                touch /data/counter.txt
+              fi
+              chown 1000:1000 /data/counter.txt
+          volumeMounts:
+          - name: counter-storage
+            mountPath: /data
+
+      containers:
+        - name: {{ include "counter-service.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbe.path }}
+              port: {{ .Values.livenessProbe.port }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: {{ .Values.readinessProbe.port }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+          volumeMounts:
+            - name: counter-storage
+              mountPath: /data
+      volumes:
+      {{- if .Values.pvc.enabled }}
+        - name: counter-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.pvc.name }}
+      {{- end }}
