@@ -27,7 +27,7 @@ resource "aws_subnet" "public_subnets" {
     Name = "${var.cluster_name}-public-${count.index + 1}"
     Environment  = var.env
     Poject = var.project
-    "kubernetes.io/cluster/kafka-project" = "owned"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
     "kubernetes.io/role/elb"               = 1
   }
 
@@ -87,9 +87,9 @@ module "eks" {
     nodes = {
       name = "${var.cluster_name}-ng"
       instance_types = ["t3.medium"]
-      min_size       = 1
-      max_size       = 2
-      desired_size   = 1
+      min_size       = 2
+      max_size       = 3
+      desired_size   = 2
 
       block_device_mappings = {
         xvda = {
