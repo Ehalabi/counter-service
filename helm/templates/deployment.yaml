@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: {{ include "counter-service.name" . }}
 spec:
-  #replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ include "counter-service.name" . }}
