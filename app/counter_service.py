@@ -2,7 +2,7 @@
 import os
 import redis
 from flask import Flask, request
-from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, Counter
 
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
@@ -11,7 +11,7 @@ r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 
 app = Flask(__name__)
 
-http_requests_total = COUNTER("http_requests_total", "Total number of HTTP requests received", ["status", "path", "method"])
+http_requests_total = Counter("http_requests_total", "Total number of HTTP requests received", ["status", "path", "method"])
 
 @app.after_request
 def after_request(response):
