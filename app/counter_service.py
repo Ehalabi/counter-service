@@ -1,6 +1,6 @@
 #!flask/bin/python
 import os
-from flask import Flask, request, request_started
+from flask import Flask, request
 
 COUNTER_FILE = os.getenv("COUNTER_FILE", "data/counter.txt")
 
