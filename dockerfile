@@ -25,4 +25,4 @@ USER nonroot
 
 EXPOSE 8000
 
-ENTRYPOINT ["python3", "counter_service.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "-w", "2" ,"counter_service:app"]
