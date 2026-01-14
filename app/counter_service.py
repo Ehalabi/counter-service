@@ -1,34 +1,19 @@
 #!flask/bin/python
 import os
+import redis
 from flask import Flask, request
 
-COUNTER_FILE = os.getenv("COUNTER_FILE", "data/counter.txt")
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
-def load_counter():
-    try:
-        with open(COUNTER_FILE, 'r', encoding="utf-8") as f:
-            content = f.read()
-            return int(content) if content else 0
-    except Exception as e:
-        print(f"Failed to load counter: {e}")
-        return 0
-
-def save_counter(value):
-    try:
-        with open(COUNTER_FILE, 'w', encoding="utf-8") as f:
-            f.write(str(value))
-    except Exception as e:
-        print(f"Failed to save counter: {e}")
-        raise
-
+r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 
 app = Flask(__name__)
 
-counter = load_counter()
-
 @app.route("/metrics")
 def metrics():
-    return f"request_counter_total {counter}\n", 200, {'Content-Type': 'text/plain'}
+    count = r.get("counter") or 0
+    return f"request_counter_total {count}\n", 200, {'Content-Type': 'text/plain'}
 
 @app.route('/healthz')
 def healthz():
@@ -37,19 +22,21 @@ def healthz():
 
 @app.get("/readyz")
 def readyz():
-    return ("ready", 200) if os.path.exists("/data/counter.txt") else ("not ready", 503)
+    try:
+        r.ping()
+        return "ready", 200
+    except redis.ConnectionError:
+        return "not ready", 503
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-
-    global counter
-
     try:
         if request.method == "POST":
-            counter+=1
-            save_counter(counter)
+            count = r.incr("counter")
             return "Hmm, Plus 1 please "
-        return str(f"Our counter is: {counter} ")
+
+        current_count = r.get("counter") or 0
+        return str(f"Our counter is: {current_count}")
 
     except Exception as e:
         return f"Internal server error: {e}\n", 500
