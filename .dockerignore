@@ -1,0 +1,7 @@
+# Ignore everything
+*
+
+# Exclude what I need
+!**/
+!*.py
+!requirements.txt
