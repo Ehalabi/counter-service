@@ -29,8 +29,8 @@ pvc:
 livenessProbe:
   path: /healthz
   port: 8000
-  initialDelaySeconds: 5
-  periodSeconds: 5
+  initialDelaySeconds: 10
+  periodSeconds: 10
 
 readinessProbe:
   path: /readyz
