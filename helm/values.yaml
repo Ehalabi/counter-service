@@ -40,3 +40,6 @@ readinessProbe:
 
 ingress:
   enabled: true
+
+test:
+  testing: 1
