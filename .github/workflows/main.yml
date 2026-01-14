@@ -19,7 +19,7 @@ jobs:
           pip install pylint pytest
       - name: Lint and Test
         run: |
-          pylint app/*.py
+          pylint app/*.py --fail-under=6.0
           pytest app/tests
 
   build-and-push:
