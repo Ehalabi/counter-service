@@ -17,6 +17,7 @@ FROM python:3.12-slim
 WORKDIR /app
 
 COPY --from=build /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=build /usr/local/bin/gunicorn /usr/local/bin/gunicorn
 COPY --from=build /app/counter_service.py /app
 
 RUN useradd -ms /bin/bash nonroot 
