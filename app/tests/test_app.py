@@ -7,7 +7,7 @@ from app.counter_service import app
 @pytest.fixture
 def client():
     redis_server = fakeredis.FakeServer()
-    fake_redis = fakeredis.FakeStrictRedis(server=server, decode_responses=True)
+    fake_redis = fakeredis.FakeStrictRedis(server=redis_server, decode_responses=True)
 
     with patch('app.counter_service.r', fake_redis):
         app.config["TESTING"] = True
