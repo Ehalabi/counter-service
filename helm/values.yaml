@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: e119/counter-service
-  tag: 8edd36378a1043b08ec0026d9ae51b6882e2a473
+  tag: d5a02a9579bc0f066cba623bf39984b31c1209c6
   pullPolicy: Always
 service:
   type: ClusterIP
