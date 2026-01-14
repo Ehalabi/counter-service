@@ -33,5 +33,3 @@ readinessProbe:
   periodSeconds: 5
 ingress:
   enabled: true
-test:
-  testing: 1
