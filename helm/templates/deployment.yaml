@@ -42,12 +42,3 @@ spec:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
-          volumeMounts:
-            - name: counter-storage
-              mountPath: /data
-      volumes:
-      {{- if .Values.pvc.enabled }}
-        - name: counter-storage
-          persistentVolumeClaim:
-            claimName: {{ .Values.pvc.name }}
-      {{- end }}
