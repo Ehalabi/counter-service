@@ -1,0 +1,8 @@
+server:
+  persistentVolume:
+    storageClass: gp3-storage-class
+
+alertmanager:
+  persistence:
+    enabled: true
+    storageClass: gp3-storage-class
