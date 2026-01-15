@@ -23,7 +23,7 @@ Additionally, the service provides:
 * Horizontal Pod Autoscaler (HPA) support for scaling based on load working alongside ArgoCD
 
 # Instructions
-1. Provision the Kubernetes Cluster
+## 1. Provision the Kubernetes Cluster
 
 This project assumes a managed Kubernetes cluster (EKS on AWS). You can provision it using Terraform or your preferred method:
 ```bash
@@ -32,7 +32,7 @@ terraform apply
 ```
 This will create a VPC with two public subnets and an Internet Gateway, suitable for hosting the application and related services.
 
-2. Set up Namespaces and Storage
+## 2. Set up Namespaces and Storage
 
 Create the namespaces for the production application and monitoring:
 ```bash
@@ -40,7 +40,7 @@ kubectl create namespace prod
 kubectl create namespace monitoring
 kubectl create namespace argocd
 ```
-3. Install EBS CSI Driver and StorageClaim
+## 3. Install EBS CSI Driver and StorageClaim
 
 To allow dynamic EBS volumes for PVCs:
 ```bash
@@ -58,20 +58,20 @@ eksctl create addon --cluster <cluster-name> --name aws-ebs-csi-driver --version
 kubectl apply -f manifests/gp3_storageclass.yaml
 ```
 
-4. Deploy Redis
+## 4. Deploy Redis
 The application uses Redis to persist the counter. Apply the Redis StatefulSet and Service:
 ```bash
 kubectl apply -f redis.yaml -n prod
 ```
 Redis uses a PersistentVolumeClaim (PVC) to retain data across pod restarts.
 
-5. Install Metrics Server
+## 5. Install Metrics Server
 Metrics server is required for Horizontal Pod Autoscaler (HPA) to function:
 ```bash
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
-6. Install AWS Load Balancer Controller
+## 6. Install AWS Load Balancer Controller
 ```bash
 # Download the IAM policy
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.14.1/docs/install/iam_policy.json
@@ -102,7 +102,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --version 1.14.0
 ```
 
-7. Install Argo CD
+## 7. Install Argo CD
 
 Argo CD manages deployment of the Helm chart:
 ```bash
@@ -122,7 +122,7 @@ Apply the Argo CD Application manifest for the counter service:
 kubectl apply -f manifests/argocd-counter.yaml
 ```
 
-8. Deploy Monitoring (Prometheus + Grafana)
+## 8. Deploy Monitoring (Prometheus + Grafana)
 
 Prometheus:
 ```bash
@@ -141,7 +141,7 @@ kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-pass
 ```
 You can import dashboards for Kubernetes cluster and Node Exporter monitoring.
 
-9. Running the CI/CD Pipeline
+## 9. Running the CI/CD Pipeline
 
 The pipeline is configured via GitHub Actions and works as follows:
 1. Push code to the repository main branch to trigger the workflow.
@@ -150,7 +150,7 @@ The pipeline is configured via GitHub Actions and works as follows:
 4. Helm chart values.yaml is updated with the new image tag and pushed back.
 5. Argo CD detects the change and performs a rolling update on the cluster.
 
-10. Testing the Application
+## 10. Testing the Application
 Once deployed:
 ```bash
 # Get the ALB address
