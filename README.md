@@ -150,6 +150,17 @@ The pipeline is configured via GitHub Actions and works as follows:
 4. Helm chart values.yaml is updated with the new image tag and pushed back.
 5. Argo CD detects the change and performs a rolling update on the cluster.
 
+#### Required GitHub Secrets
+
+These must be configured in the repository:
+
+| Secret Name       | Description                           |
+| ----------------- | ------------------------------------- |
+| `DOCKER_USERNAME` | Docker Hub username                   |
+| `DOCKER_PASSWORD` | Docker Hub access token               |
+
+GitHub Repository -> Settings -> Security secrets and variables -> Actions -> New repository secret
+
 ## 10. Testing the Application
 Once deployed:
 ```bash
